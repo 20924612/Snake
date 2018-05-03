@@ -34,6 +34,5 @@ public class ScoreBoard extends JLabel {
         this.score = score;
         setTextScore();
     }
-    
-    
+
 }

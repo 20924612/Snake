@@ -17,43 +17,54 @@ public class Food {
 
     private Node position;
     private Snake snake;
+    private int growth;
 
-    public Food(Snake snake) {
+    public Food(Snake snake, ArrayList <Node> obsList) {
 
+        growth =1;
         this.snake = snake;
-        generatePosition();
+        generatePosition(obsList);
 
     }
 
-    private void generatePosition() {
+    private void generatePosition(ArrayList <Node> obsList) {
         boolean hit = true;
         Node node = null;
         while (hit) {
-            hit=false;
-            
+            hit = true;
+
             int randomRow = (int) (Math.random() * Board.NUM_ROW);
             int randomCol = (int) (Math.random() * Board.NUM_COL);
-            node = new Node(randomRow, randomCol);
+            node = new Node(randomRow, randomCol, Color.YELLOW);
 
             ArrayList<Node> listNodes = snake.getListNodes();
-            for (Node n : listNodes) {
-                if(node.getRow()==n.getRow() && node.getCol() == n.getCol()){
-                    hit=true;
-                }
+            hit = Util.checkNodeWithNodeList(node, listNodes);
+            if(!hit){
+            hit= Util.checkNodeWithNodeList(node, obsList);
             }
+            
         }
         position = node;
-        
+
     }
-    
-    public void draw(Graphics g, int squareWidth, int squareHeight){
-        
-        Util.drawSquare(g, position, Color.yellow, squareWidth, squareHeight);
-        
+
+    public void draw(Graphics g, int squareWidth, int squareHeight) {
+
+        Util.drawSquare(g, position,position.getColor(), squareWidth, squareHeight);
+
     }
-    
-    public Node getPosition(){
-        
+
+    public Node getPosition() {
+
         return position;
+    }
+    
+    public int getGrowth(){
+        return growth;
+    }
+    
+    public void setGrowth(int g){
+        
+        growth=g;
     }
 }

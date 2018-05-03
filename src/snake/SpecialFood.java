@@ -7,28 +7,29 @@ package snake;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 /**
  *
  * @author alu20924612v
  */
-public class SpecialFood extends Food{
-    
+public class SpecialFood extends Food {
+
     private int visibleTime;
-    
-    public SpecialFood(Snake snake){
-        super(snake);
-        visibleTime=10;
+
+    public SpecialFood(Snake snake, ArrayList <Node> obsList) {
+        super(snake, obsList);
+        visibleTime = 10;
+        super.setGrowth(3);
     }
-    
-    public int getVisibleTime(){
+
+    public int getVisibleTime() {
         return visibleTime;
     }
-    
-     public void draw(Graphics g, int squareWidth, int squareHeight){
-        
+
+    public void draw(Graphics g, int squareWidth, int squareHeight) {
+
         Util.drawSquare(g, super.getPosition(), Color.pink, squareWidth, squareHeight);
-        
+
     }
 }
-

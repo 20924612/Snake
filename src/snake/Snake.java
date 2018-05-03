@@ -45,21 +45,21 @@ public class Snake {
 
     private void initListNodes() {
         listNodes = new ArrayList<Node>();
-        listNodes.add(new Node(Board.NUM_ROW / 2, Board.NUM_COL / 2));
-        listNodes.add(new Node(Board.NUM_ROW / 2 - 1, Board.NUM_COL / 2));
+        listNodes.add(new Node(Board.NUM_ROW / 2, Board.NUM_COL / 2, Color.BLACK));
+        listNodes.add(new Node(Board.NUM_ROW / 2 - 1, Board.NUM_COL / 2, Color.BLACK));
 
     }
 
     public void draw(Graphics g, int squareWidth, int squareHeight) {
 
         for (Node n : listNodes) {
-            Util.drawSquare(g, n, Color.black, squareWidth, squareHeight);
+            Util.drawSquare(g, n, n.getColor(), squareWidth, squareHeight);
         }
     }
 
     public void move() {
 
-        Node newNode = new Node(listNodes.get(0).getRow(), listNodes.get(0).getCol());
+        Node newNode = new Node(listNodes.get(0).getRow(), listNodes.get(0).getCol(), Color.BLACK);
         switch (direction) {
             case UP:
                 newNode.setRow(newNode.getRow() - 1);
@@ -78,6 +78,7 @@ public class Snake {
 
         if (eatCounter > 0) {
             eatCounter--;
+            changeColor();
         } else {
             listNodes.remove(listNodes.size() - 1);
         }
@@ -85,18 +86,29 @@ public class Snake {
     }
 
     public void eat(Food food) {
-        eatCounter += 1;
+        eatCounter += food.getGrowth();
 
     }
-    
-    public boolean checkWithItself(int row, int col){
-        
-        for(Node n : getListNodes() ){
-            if(col == n.getCol()&& row == n.getRow()){
+
+    public boolean checkWithItself(int row, int col) {
+
+        for (Node n : getListNodes()) {
+            if (col == n.getCol() && row == n.getRow()) {
                 return true;
             }
-            
+
         }
         return false;
+    }
+    
+    private void changeColor(){
+       
+        int colorNumber=0;
+        int counter=255/listNodes.size();
+        
+        for(Node n: listNodes){
+            colorNumber += counter;
+            n.setColor(new Color(colorNumber, colorNumber, colorNumber));
+        }
     }
 }

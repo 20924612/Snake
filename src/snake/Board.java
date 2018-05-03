@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -65,24 +66,33 @@ public class Board extends JPanel implements ActionListener {
     private ScoreBoard scoreBoard;
     private Timer specialFoodTimer;
     private ArrayList<Node> obstacleListNodes;
+    private RecordsScore recordScore;
+    private JFrame parentFrame;
 
     public Board() {
         super();
+        initVariables();
+    }
+
+    private void initVariables() {
+
         obstacleListNodes = new ArrayList<Node>();
-        
         snake = new Snake();
-        initObstacles();
+        createObstacles(4);
+
         deltaTime = 300;
         initFood();
         timer = new Timer(deltaTime, this);
         keyAdapter = new MyKeyAdapter();
         setFocusable(true);
         scoreBoard = null;
-        food = new Food(snake);
-
+        food = new Food(snake, obstacleListNodes);
+        recordScore = null;
+        parentFrame = null;
     }
 
     public void InitGame() {
+        initVariables();
         timer.start();
         setFocusable(true);
         initFood();
@@ -91,16 +101,16 @@ public class Board extends JPanel implements ActionListener {
 
     private void initFood() {
         if (scoreBoard != null) {
-            food = new Food(snake);
+            food = new Food(snake, obstacleListNodes);
             specialFood = null;
             if (scoreBoard.getScore() > 0 && scoreBoard.getScore() % 5 == 0) {
                 food = null;
-                specialFood = new SpecialFood(snake);
+                specialFood = new SpecialFood(snake, obstacleListNodes);
                 specialFoodTimer = new Timer(specialFood.getVisibleTime() * 1000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
                         specialFood = null;
-                        food = new Food(snake);
+                        food = new Food(snake, obstacleListNodes);
                         specialFoodTimer.stop();
 
                     }
@@ -108,43 +118,42 @@ public class Board extends JPanel implements ActionListener {
 
                 specialFoodTimer.start();
             } else {
-                if(specialFoodTimer.isRunning()){
+                if (specialFoodTimer != null && specialFoodTimer.isRunning()) {
                     specialFoodTimer.stop();
                 }
-                food = new Food(snake);
+                food = new Food(snake, obstacleListNodes);
                 specialFood = null;
             }
         }
     }
 
-    private void initObstacles() {
+    private void createObstacles(int nObstacles) {
 
         boolean hit;
         int counter = 0;
-        while (counter < 4) {
-            hit=false;
+        while (counter < nObstacles) {
+            hit = false;
             int row = (int) (Math.random() * NUM_ROW);
             int col = (int) (Math.random() * NUM_COL);
 
-            Node obstacle = new Node(row, col);
-
-            for (Node nowNode : snake.getListNodes()) {
-                if (obstacle.getRow() == nowNode.getRow() && obstacle.getCol() == nowNode.getCol()) {
-                    hit = true;                                                          
-                }
+            Node obstacle = new Node(row, col, Color.gray);
+            hit = Util.checkNodeWithNodeList(obstacle, snake.getListNodes());
+            if (!hit) {
+                hit = Util.checkNodeWithNodeList(obstacle, obstacleListNodes);
             }
-            if(hit = false){
-                  obstacleListNodes.add(obstacle);
-            counter++;
+            if (!hit) {
+                obstacleListNodes.add(obstacle);
+
+                counter++;
             }
         }
-        
+
     }
 
     private void drawObstacles(Graphics g) {
 
         for (Node obs : obstacleListNodes) {
-            Util.drawSquare(g, obs, Color.black, getSquareWidth(), getSquareHeight());
+            Util.drawSquare(g, obs, Color.gray, getSquareWidth(), getSquareHeight());
         }
     }
 
@@ -158,14 +167,20 @@ public class Board extends JPanel implements ActionListener {
 
         }
 
-        repaint();
+        
 
-        if ((food != null || specialFood != null) && checkFood()) {
-
-            snake.eat(food);
+        if (checkFood()) {
+            if (food != null) {
+                snake.eat(food);
+            } else {
+                snake.eat(specialFood);
+            }
+            createObstacles(1);
             initFood();
             scoreBoard.setScore(scoreBoard.getScore() + 1);
+
         }
+            repaint();
     }
 
     private boolean canMove(DirectionType newDirection) {
@@ -194,8 +209,8 @@ public class Board extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
 
-        drawObstacles(g);
         super.paintComponent(g);
+        drawObstacles(g);
         drawBoard(g);
         snake.draw(g, getSquareWidth(), getSquareHeight());
         if (food != null) {
@@ -275,8 +290,11 @@ public class Board extends JPanel implements ActionListener {
                 }
                 break;
         }
+        Node node = new Node(nextPosRow, nextPosCol, Color.BLACK);
+        if (Util.checkNodeWithNodeList(node, obstacleListNodes)) {
+            return true;
+        }
         return snake.checkWithItself(nextPosRow, nextPosCol);
-
     }
 
     private void processGameOver() {
@@ -284,6 +302,17 @@ public class Board extends JPanel implements ActionListener {
         removeKeyListener(keyAdapter);
 
         timer.stop();
+
         System.out.println("Game Over");
+
+        recordScore = new RecordsScore(parentFrame, true, scoreBoard.getScore());
+
+        recordScore.setVisible(true);
     }
+
+    public void setParentFrame(JFrame parentFrame) {
+
+        this.parentFrame = parentFrame;
+    }
+
 }

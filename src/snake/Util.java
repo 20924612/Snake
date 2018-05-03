@@ -7,13 +7,16 @@ package snake;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author alu20924612v
  */
 public class Util {
-     public static void drawSquare(Graphics g, Node node, Color color, int squareWidth, int squareHeight) {
+
+    public static void drawSquare(Graphics g, Node node, Color color, int squareWidth, int squareHeight) {
         int x = node.getCol() * squareWidth;
         int y = node.getRow() * squareHeight;
         g.setColor(color);
@@ -28,5 +31,16 @@ public class Util {
         g.drawLine(x + squareWidth - 1,
                 y + squareHeight - 1,
                 x + squareWidth - 1, y + 1);
+    }
+
+    public static boolean checkNodeWithNodeList(Node node, ArrayList<Node> nodeList) {
+
+        for (Node n : nodeList) {
+            if (node.getRow() == n.getRow() && n.getCol() == node.getCol()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
