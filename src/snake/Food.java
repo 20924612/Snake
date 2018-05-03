@@ -16,18 +16,18 @@ import java.util.ArrayList;
 public class Food {
 
     private Node position;
-    private Snake snake;
+    private Snake[] snake;
     private int growth;
 
-    public Food(Snake snake, ArrayList <Node> obsList) {
+    public Food(ArrayList<Node> obsList, Snake... snake) {
 
-        growth =1;
+        growth = 1;
         this.snake = snake;
         generatePosition(obsList);
 
     }
 
-    private void generatePosition(ArrayList <Node> obsList) {
+    private void generatePosition(ArrayList<Node> obsList) {
         boolean hit = true;
         Node node = null;
         while (hit) {
@@ -37,12 +37,13 @@ public class Food {
             int randomCol = (int) (Math.random() * Board.NUM_COL);
             node = new Node(randomRow, randomCol, Color.YELLOW);
 
-            ArrayList<Node> listNodes = snake.getListNodes();
-            hit = Util.checkNodeWithNodeList(node, listNodes);
-            if(!hit){
-            hit= Util.checkNodeWithNodeList(node, obsList);
+            for (Snake s : snake) {
+                ArrayList<Node> listNodes = s.getListNodes();
+                hit = Util.checkNodeWithNodeList(node, listNodes);
+                if (!hit) {
+                    hit = Util.checkNodeWithNodeList(node, obsList);
+                }
             }
-            
         }
         position = node;
 
@@ -50,7 +51,7 @@ public class Food {
 
     public void draw(Graphics g, int squareWidth, int squareHeight) {
 
-        Util.drawSquare(g, position,position.getColor(), squareWidth, squareHeight);
+        Util.drawSquare(g, position, position.getColor(), squareWidth, squareHeight);
 
     }
 
@@ -58,13 +59,13 @@ public class Food {
 
         return position;
     }
-    
-    public int getGrowth(){
+
+    public int getGrowth() {
         return growth;
     }
-    
-    public void setGrowth(int g){
-        
-        growth=g;
+
+    public void setGrowth(int g) {
+
+        growth = g;
     }
 }

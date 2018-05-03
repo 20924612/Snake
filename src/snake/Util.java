@@ -43,4 +43,31 @@ public class Util {
 
         return false;
     }
+
+    public static Color getRandomColor() {
+
+        int nColor = (int) (Math.random() * 9);
+
+        switch (nColor) {
+
+            case 1:
+                return Color.BLUE;
+            case 2:
+                return Color.CYAN;
+            case 3:
+                return Color.GREEN;
+            case 4:
+                return Color.MAGENTA;
+            case 5:
+                return Color.ORANGE;
+            case 6:
+                return Color.PINK;
+            case 7:
+                return Color.RED;
+            case 8:
+                return Color.YELLOW;
+            default:
+                return Color.PINK;
+        }
+    }
 }

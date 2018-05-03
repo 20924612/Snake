@@ -21,12 +21,33 @@ public class Snake {
     private ArrayList<Node> listNodes;
     private DirectionType direction;
     private int eatCounter;
+    private boolean isAlive;
 
-    public Snake() {
+    public Snake(DirectionType dir) {
 
-        initListNodes();
-        direction = DirectionType.RIGHT;
+        isAlive = true;
+        if (dir == DirectionType.RIGHT) {
+            direction = DirectionType.RIGHT;
+            initListNodes(4);
+            
+        } else {
+            direction = DirectionType.LEFT;
+            initListNodes(2);
+        }
+
         eatCounter = 0;
+    }
+    
+    public boolean getIsAlive(){
+        return isAlive;
+    }
+    
+    public void die(){
+        isAlive= false;
+        
+        for(Node n: listNodes){
+            n.setColor(Color.BLACK);
+        }
     }
 
     public ArrayList<Node> getListNodes() {
@@ -43,10 +64,10 @@ public class Snake {
         return direction;
     }
 
-    private void initListNodes() {
+    private void initListNodes(int n) {
         listNodes = new ArrayList<Node>();
-        listNodes.add(new Node(Board.NUM_ROW / 2, Board.NUM_COL / 2, Color.BLACK));
-        listNodes.add(new Node(Board.NUM_ROW / 2 - 1, Board.NUM_COL / 2, Color.BLACK));
+        listNodes.add(new Node(Board.NUM_ROW / 2, Board.NUM_COL / n, Color.BLACK));
+        listNodes.add(new Node(Board.NUM_ROW / 2 - 1, Board.NUM_COL / n, Color.BLACK));
 
     }
 
@@ -59,7 +80,7 @@ public class Snake {
 
     public void move() {
 
-        Node newNode = new Node(listNodes.get(0).getRow(), listNodes.get(0).getCol(), Color.BLACK);
+        Node newNode = new Node(listNodes.get(0).getRow(), listNodes.get(0).getCol(), Util.getRandomColor());
         switch (direction) {
             case UP:
                 newNode.setRow(newNode.getRow() - 1);
@@ -100,15 +121,26 @@ public class Snake {
         }
         return false;
     }
-    
-    private void changeColor(){
-       
-        int colorNumber=0;
-        int counter=255/listNodes.size();
-        
-        for(Node n: listNodes){
+
+    private void changeColor() {
+
+        int colorNumber = 0;
+        int counter = 255 / listNodes.size();
+
+        for (Node n : listNodes) {
             colorNumber += counter;
             n.setColor(new Color(colorNumber, colorNumber, colorNumber));
         }
+    }
+    
+    public boolean checkWithOtherSnake(Snake otherSnake, int row, int col){
+        
+        for (Node n : otherSnake.getListNodes()) {
+            if (col == n.getCol() && row == n.getRow()) {
+                return true;
+            }
+
+        }
+        return false;
     }
 }

@@ -17,8 +17,8 @@ public class SpecialFood extends Food {
 
     private int visibleTime;
 
-    public SpecialFood(Snake snake, ArrayList <Node> obsList) {
-        super(snake, obsList);
+    public SpecialFood(ArrayList <Node> obsList, Snake... snake) {
+        super(obsList, snake);
         visibleTime = 10;
         super.setGrowth(3);
     }
