@@ -60,13 +60,14 @@ public class RecordsScore extends javax.swing.JDialog {
     private Boolean saveRecord;
     private JLabel[] recordLabels;
 
-    public RecordsScore(java.awt.Frame parent, boolean modal, int score) {
+    public RecordsScore(java.awt.Frame parent, boolean modal, int score, String player) {
         super(parent, modal);
         this.score = score;
         saveRecord = true;
 
         initComponents();
         initRecordsLabel();
+        jLabelPlayer.setText(player);
         try {
             recordsList = readRecords();
         } catch (IOException ex) {
@@ -89,10 +90,17 @@ public class RecordsScore extends javax.swing.JDialog {
 
                 String[] recordLine = new String[2];
                 recordLine = line.split(":");
-                Record r = new Record(Integer.parseInt(recordLine[0]), recordLine[1]);
-                
-                list.add(r);
-                recordLabels[counter].setText(Integer.parseInt(recordLine[0]) + "" + recordLine[1]);
+                Record r = null;
+                if (recordLine.length > 1) {
+                    r = new Record(Integer.parseInt(recordLine[0]), recordLine[1]);
+                    list.add(r);
+                    recordLabels[counter].setText(Integer.parseInt(recordLine[0]) + "" + recordLine[1]);
+                } else {
+                    r = new Record(Integer.parseInt(recordLine[0]), "NONAME");
+                    list.add(r);
+                    recordLabels[counter].setText(Integer.parseInt(recordLine[0]) + "noname");
+                }
+
                 counter++;
             }
 
@@ -176,6 +184,7 @@ public class RecordsScore extends javax.swing.JDialog {
         jLabelRecord5 = new javax.swing.JLabel();
         jLabelName = new javax.swing.JLabel();
         jTextField = new javax.swing.JTextField();
+        jLabelPlayer = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -202,6 +211,8 @@ public class RecordsScore extends javax.swing.JDialog {
 
         jTextField.setText(" ");
 
+        jLabelPlayer.setText("Player");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,6 +220,9 @@ public class RecordsScore extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelPlayer)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -229,7 +243,9 @@ public class RecordsScore extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+                .addContainerGap()
+                .addComponent(jLabelPlayer)
+                .addGap(10, 10, 10)
                 .addComponent(jLabelCurrentScore)
                 .addGap(18, 18, 18)
                 .addComponent(jLabelRecord1)
@@ -306,6 +322,7 @@ public class RecordsScore extends javax.swing.JDialog {
     private javax.swing.JButton jButtonOK;
     private javax.swing.JLabel jLabelCurrentScore;
     private javax.swing.JLabel jLabelName;
+    private javax.swing.JLabel jLabelPlayer;
     private javax.swing.JLabel jLabelRecord1;
     private javax.swing.JLabel jLabelRecord2;
     private javax.swing.JLabel jLabelRecord3;

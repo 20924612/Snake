@@ -16,6 +16,14 @@ public class Node {
     private int row;
     private int col;
     private Color color;
+    
+     public Node(int row, int col) {
+
+        this.row = row;
+        this.col = col;
+     color= Color.BLACK;
+    }
+    
 
     public Node(int row, int col, Color color) {
 

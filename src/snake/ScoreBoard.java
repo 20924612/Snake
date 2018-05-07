@@ -17,8 +17,7 @@ public class ScoreBoard extends JLabel {
 
     public ScoreBoard() {
         super();
-        score = 0;
-        setTextScore();
+        resetScore();
     }
 
     private void setTextScore() {
@@ -32,6 +31,11 @@ public class ScoreBoard extends JLabel {
     public void setScore(int score) {
 
         this.score = score;
+        setTextScore();
+    }
+    
+    public void resetScore(){
+        score =0;
         setTextScore();
     }
 
